@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claude 101 em português</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --fundo:#F5F6F2;
+  --superficie:#FFFFFF;
+  --superficie-2:#ECEFE9;
+  --linha:#D5DAD2;
+  --texto:#1D2726;
+  --texto-2:#5A6663;
+  --acento:#0E6B66;
+  --acento-forte:#0A514D;
+  --acento-suave:#D9ECE9;
+  --acento-texto:#FFFFFF;
+  --feito:#B8861B;
+  --feito-suave:#F6EBD1;
+  --certo:#2D7A4F;
+  --certo-suave:#DDF0E4;
+  --errado:#B2392E;
+  --errado-suave:#F7DFDB;
+  --p1:#0E6B66; --p2:#8A4B0B; --p3:#5B3E96;
+  --p1-suave:#D9ECE9; --p2-suave:#F6E5D2; --p3-suave:#E6DFF5;
+  --sombra:0 1px 2px rgba(20,30,28,.06), 0 8px 24px rgba(20,30,28,.06);
+  --raio:10px;
+  --fonte-titulo:"Fraunces", Georgia, "Times New Roman", serif;
+  --fonte-corpo:"Atkinson Hyperlegible", "Helvetica Neue", Arial, sans-serif;
+  --fonte-mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --fundo:#141A1A; --superficie:#1C2424; --superficie-2:#233030; --linha:#334141;
+    --texto:#E6ECE9; --texto-2:#9DAAA6;
+    --acento:#5CC1B8; --acento-forte:#8ADBD3; --acento-suave:#1E3C3A; --acento-texto:#0F1A19;
+    --feito:#E2B45A; --feito-suave:#3B3120;
+    --certo:#6CC48E; --certo-suave:#1F3A2A;
+    --errado:#EF8A7E; --errado-suave:#432523;
+    --p1:#5CC1B8; --p2:#E7A35B; --p3:#B9A2EE;
+    --p1-suave:#1E3C3A; --p2-suave:#3D2E1B; --p3-suave:#2E2644;
+    --sombra:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --fundo:#141A1A; --superficie:#1C2424; --superficie-2:#233030; --linha:#334141;
+  --texto:#E6ECE9; --texto-2:#9DAAA6;
+  --acento:#5CC1B8; --acento-forte:#8ADBD3; --acento-suave:#1E3C3A; --acento-texto:#0F1A19;
+  --feito:#E2B45A; --feito-suave:#3B3120;
+  --certo:#6CC48E; --certo-suave:#1F3A2A;
+  --errado:#EF8A7E; --errado-suave:#432523;
+  --p1:#5CC1B8; --p2:#E7A35B; --p3:#B9A2EE;
+  --p1-suave:#1E3C3A; --p2-suave:#3D2E1B; --p3-suave:#2E2644;
+  --sombra:0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--fundo); color:var(--texto);
+  font-family:var(--fonte-corpo); font-size:17px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--acento)}
+button{font:inherit; color:inherit}
+h1,h2,h3{font-family:var(--fonte-titulo); text-wrap:balance; line-height:1.15; margin:0}
+p{margin:0 0 1em}
+b{font-weight:700}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
+:focus-visible{outline:3px solid var(--acento); outline-offset:2px}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
+
+/* ---------- barra superior ---------- */
+.topo{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+  background:var(--superficie); border-bottom:1px solid var(--linha);
+  display:flex; align-items:center; gap:12px; padding:10px 16px;
+}
+.topo .marca{font-family:var(--fonte-titulo); font-weight:600; font-size:1.05rem; white-space:nowrap}
+.topo .marca small{display:block; font-family:var(--fonte-corpo); font-weight:400; font-size:.72rem; color:var(--texto-2); letter-spacing:.04em; text-transform:uppercase}
+.topo .espaco{flex:1}
+.aluno-sel{display:flex; align-items:center; gap:8px}
+.aluno-sel label{font-size:.8rem; color:var(--texto-2); text-transform:uppercase; letter-spacing:.06em}
+.aluno-sel select{
+  font:inherit; font-size:.95rem; padding:6px 10px; border-radius:8px;
+  border:1px solid var(--linha); background:var(--superficie-2); color:var(--texto);
+}
+.btn-menu{display:none; border:1px solid var(--linha); background:var(--superficie-2); border-radius:8px; padding:6px 10px; cursor:pointer; white-space:nowrap}
+.progresso-topo{display:flex; align-items:center; gap:10px; min-width:180px}
+.progresso-topo .barra{flex:1; height:8px; background:var(--superficie-2); border-radius:99px; overflow:hidden; border:1px solid var(--linha)}
+.progresso-topo .barra i{display:block; height:100%; width:0; background:var(--acento); transition:width .4s}
+.progresso-topo span{font-size:.85rem; color:var(--texto-2); font-variant-numeric:tabular-nums; white-space:nowrap}
+
+/* ---------- layout ---------- */
+.app{display:grid; grid-template-columns:300px 1fr; min-height:calc(100vh - 60px)}
+.lateral{
+  border-right:1px solid var(--linha); background:var(--superficie);
+  padding-block:18px; padding-inline:14px; position:sticky; top:calc(60px + env(safe-area-inset-top,0px));
+  height:calc(100vh - 60px - env(safe-area-inset-top,0px)); overflow-y:auto;
+}
+.principal{padding-block:28px 80px; padding-inline:clamp(16px, 4vw, 48px); min-width:0}
+.conteudo{max-width:760px; margin:0 auto}
+
+/* ---------- sumário ---------- */
+.modulo{margin-bottom:18px}
+.modulo > .cab{
+  display:flex; align-items:baseline; gap:8px; padding:4px 8px; margin-bottom:4px;
+}
+.modulo > .cab .num{font-family:var(--fonte-titulo); color:var(--acento); font-weight:700; font-size:.95rem}
+.modulo > .cab .nome{font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--texto-2); font-weight:700}
+.lista-aulas{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+.lista-aulas button{
+  width:100%; text-align:left; background:none; border:0; border-radius:8px; padding:8px 8px;
+  display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; cursor:pointer; line-height:1.3; font-size:.95rem;
+}
+.lista-aulas button:hover{background:var(--superficie-2)}
+.lista-aulas button.ativa{background:var(--acento-suave); color:var(--acento-forte); font-weight:700}
+.marca-ok{
+  width:20px; height:20px; border-radius:50%; border:1.5px solid var(--linha); margin-top:2px;
+  display:grid; place-items:center; font-size:.7rem; color:transparent; background:var(--superficie);
+}
+.lista-aulas button.feita .marca-ok{background:var(--feito); border-color:var(--feito); color:#fff}
+.lista-aulas button.parcial .marca-ok{border-color:var(--feito); background:linear-gradient(90deg,var(--feito) 50%, transparent 50%)}
+.lista-aulas .rot{display:block}
+.lista-aulas .rot small{display:block; font-weight:400; color:var(--texto-2); font-size:.75rem}
+
+/* ---------- cabeçalho da aula ---------- */
+.aula-cab{margin-bottom:28px}
+.eyebrow{font-size:.78rem; text-transform:uppercase; letter-spacing:.08em; color:var(--texto-2); margin-bottom:8px; display:flex; gap:10px; flex-wrap:wrap}
+.eyebrow b{color:var(--acento)}
+.aula-cab h1{font-size:clamp(1.7rem, 3.4vw, 2.4rem); font-weight:600; margin-bottom:10px}
+.aula-cab .resumo{font-size:1.08rem; color:var(--texto-2); max-width:62ch}
+.selo-feita{
+  display:inline-flex; align-items:center; gap:6px; background:var(--feito-suave); color:var(--feito);
+  border-radius:99px; padding:3px 10px; font-size:.8rem; font-weight:700; margin-top:10px;
+}
+
+.bloco{
+  background:var(--superficie); border:1px solid var(--linha); border-radius:var(--raio);
+  padding-block:18px 20px; padding-inline:clamp(16px,3vw,26px); margin-bottom:18px;
+}
+.bloco h2{font-size:1.32rem; font-weight:600; margin-bottom:10px}
+.bloco h3{font-size:1.05rem; font-weight:600; font-family:var(--fonte-corpo); margin:14px 0 6px}
+.objetivos{margin:0; padding-left:1.2em}
+.objetivos li{margin-bottom:4px}
+.secao{margin-bottom:26px}
+.secao h2{font-size:1.32rem; font-weight:600; margin-bottom:8px; padding-top:6px}
+.secao p:last-child{margin-bottom:0}
+ul.pontos{padding-left:1.15em; margin:0 0 1em}
+ul.pontos li{margin-bottom:8px}
+ol.passos{padding-left:1.3em; margin:0 0 1em}
+ol.passos li{margin-bottom:8px}
+dl.lista-def{margin:0 0 1em}
+dl.lista-def dt{font-weight:700; margin-top:10px}
+dl.lista-def dd{margin:2px 0 0 0; color:var(--texto)}
+.nota{
+  background:var(--superficie-2); border-left:3px solid var(--acento); padding:10px 14px; border-radius:6px;
+  font-size:.95rem; margin:12px 0 0;
+}
+.tabela-wrap{overflow-x:auto; margin:8px 0 14px; border:1px solid var(--linha); border-radius:8px}
+.tabela{border-collapse:collapse; width:100%; font-size:.93rem; min-width:520px}
+.tabela th,.tabela td{padding:9px 12px; border-bottom:1px solid var(--linha); vertical-align:top; text-align:left}
+.tabela th{background:var(--superficie-2); font-weight:700; font-size:.8rem; text-transform:uppercase; letter-spacing:.05em}
+.tabela tr:last-child td{border-bottom:0}
+
+.exemplo-prompt{
+  background:var(--superficie-2); border-radius:8px; padding:14px 16px; font-size:1rem; line-height:1.7; margin:8px 0 6px;
+}
+.parte{padding:2px 4px; border-radius:4px; box-decoration-break:clone; -webkit-box-decoration-break:clone}
+.parte.p1{background:var(--p1-suave); color:var(--p1)}
+.parte.p2{background:var(--p2-suave); color:var(--p2)}
+.parte.p3{background:var(--p3-suave); color:var(--p3)}
+.legenda{font-size:.85rem; color:var(--texto-2); margin-bottom:12px}
+.legenda .p1{color:var(--p1); font-weight:700}
+.legenda .p2{color:var(--p2); font-weight:700}
+.legenda .p3{color:var(--p3); font-weight:700}
+
+/* ---------- prática ---------- */
+.pratica-bloco{border-color:var(--acento); border-width:1.5px}
+.pratica-bloco .tag{display:inline-block; font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; color:var(--acento); font-weight:700; margin-bottom:4px}
+.prompt-caixa{
+  position:relative; background:var(--superficie-2); border:1px dashed var(--linha); border-radius:8px;
+  padding:14px 16px; font-family:var(--fonte-mono); font-size:.9rem; line-height:1.6; white-space:pre-wrap; margin:10px 0 14px;
+}
+.prompt-caixa .copiar{
+  position:absolute; top:8px; right:8px; font-family:var(--fonte-corpo); font-size:.78rem;
+  background:var(--superficie); border:1px solid var(--linha); border-radius:6px; padding:4px 8px; cursor:pointer;
+}
+.prompt-caixa .copiar:hover{background:var(--acento-suave)}
+.prompt-titulo{font-size:.8rem; text-transform:uppercase; letter-spacing:.06em; color:var(--texto-2); margin:14px 0 0}
+.check-linha{display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--linha); border-radius:8px; background:var(--superficie-2); cursor:pointer; margin-top:6px}
+.check-linha input{width:20px; height:20px; accent-color:var(--feito)}
+.check-linha.on{background:var(--feito-suave); border-color:var(--feito)}
+textarea.notas{
+  width:100%; min-height:90px; font:inherit; font-size:.95rem; padding:10px 12px; border:1px solid var(--linha);
+  border-radius:8px; background:var(--superficie); color:var(--texto); resize:vertical; margin-top:6px;
+}
+.reflexao{margin-top:16px}
+.reflexao ul{padding-left:1.15em; margin:4px 0 0}
+.salvo{font-size:.8rem; color:var(--texto-2); margin-top:4px; min-height:1.2em}
+
+/* classificar */
+.classificar{display:flex; flex-direction:column; gap:10px; margin-top:10px}
+.classificar .item{display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; padding:10px 12px; border:1px solid var(--linha); border-radius:8px; background:var(--superficie-2)}
+.classificar select{font:inherit; font-size:.9rem; padding:6px 8px; border-radius:6px; border:1px solid var(--linha); background:var(--superficie); color:var(--texto); max-width:100%}
+.classificar .item.certo{border-color:var(--certo); background:var(--certo-suave)}
+.classificar .item.errado{border-color:var(--errado); background:var(--errado-suave)}
+.classificar .veredito{grid-column:1 / -1; font-size:.88rem}
+
+/* ---------- quiz ---------- */
+.quiz-q{margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--linha)}
+.quiz-q:last-of-type{border-bottom:0}
+.quiz-q .enun{font-weight:700; margin-bottom:8px}
+.quiz-q .enun .n{color:var(--acento); font-family:var(--fonte-titulo); margin-right:6px}
+.opcoes{display:flex; flex-direction:column; gap:6px}
+.opcao{
+  display:flex; gap:10px; align-items:flex-start; padding:9px 12px; border:1px solid var(--linha); border-radius:8px;
+  background:var(--superficie); cursor:pointer; text-align:left; width:100%; line-height:1.4;
+}
+.opcao:hover:not(:disabled){background:var(--superficie-2)}
+.opcao .letra{font-family:var(--fonte-titulo); font-weight:700; color:var(--texto-2); min-width:1.2em}
+.opcao.certa{border-color:var(--certo); background:var(--certo-suave)}
+.opcao.errada{border-color:var(--errado); background:var(--errado-suave)}
+.opcao.certa .letra{color:var(--certo)}
+.opcao.errada .letra{color:var(--errado)}
+.opcao:disabled{cursor:default; opacity:.92}
+.explica{margin-top:8px; font-size:.93rem; padding:8px 12px; border-radius:6px; background:var(--superficie-2)}
+.explica.ok{color:var(--certo); background:var(--certo-suave)}
+.explica.nok{color:var(--errado); background:var(--errado-suave)}
+.explica b{margin-right:4px}
+.placar{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:6px}
+.placar .nota-q{font-family:var(--fonte-titulo); font-size:1.4rem; font-weight:600; font-variant-numeric:tabular-nums}
+
+/* ---------- botões ---------- */
+.btn{
+  display:inline-flex; align-items:center; gap:8px; border-radius:8px; padding:10px 16px; cursor:pointer;
+  border:1px solid var(--linha); background:var(--superficie); font-weight:700; font-size:.95rem;
+}
+.btn:hover{background:var(--superficie-2)}
+.btn.primario{background:var(--acento); border-color:var(--acento); color:var(--acento-texto)}
+.btn.primario:hover{background:var(--acento-forte); border-color:var(--acento-forte)}
+.btn.feito{background:var(--feito-suave); border-color:var(--feito); color:var(--feito)}
+.btn:disabled{opacity:.5; cursor:not-allowed}
+.btn.pequeno{padding:6px 10px; font-size:.85rem; font-weight:400}
+.rodape-aula{display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between; margin-top:26px; padding-top:18px; border-top:1px solid var(--linha)}
+.rodape-aula .nav{display:flex; gap:8px; flex-wrap:wrap}
+.aviso-concluir{font-size:.88rem; color:var(--texto-2); width:100%}
+
+/* ---------- início / certificado ---------- */
+.inicio h1{font-size:clamp(2rem,4.5vw,3rem); font-weight:600; margin-bottom:10px}
+.inicio .sub{font-size:1.15rem; color:var(--texto-2); max-width:60ch}
+.cards-mod{display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:12px; margin:22px 0}
+.card-mod{background:var(--superficie); border:1px solid var(--linha); border-radius:var(--raio); padding:16px; display:flex; flex-direction:column; gap:6px}
+.card-mod .n{font-family:var(--fonte-titulo); color:var(--acento); font-weight:700; font-size:1.3rem}
+.card-mod .t{font-weight:700}
+.card-mod .q{font-size:.9rem; color:var(--texto-2); flex:1}
+.card-mod .pr{font-size:.8rem; color:var(--texto-2); font-variant-numeric:tabular-nums}
+.card-mod .mini{height:6px; background:var(--superficie-2); border-radius:99px; overflow:hidden; border:1px solid var(--linha)}
+.card-mod .mini i{display:block; height:100%; background:var(--feito); width:0}
+.metodo{display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; margin-top:12px}
+@media (max-width:520px){ .metodo{grid-template-columns:1fr} }
+.metodo div{background:var(--superficie-2); border-radius:8px; padding:12px 14px; font-size:.95rem}
+.metodo b{display:block; margin-bottom:2px}
+
+.certificado{
+  background:var(--superficie); border:2px solid var(--feito); border-radius:14px; padding:clamp(20px,5vw,44px);
+  text-align:center; margin:18px 0; box-shadow:var(--sombra);
+}
+.certificado .rotulo{font-size:.8rem; text-transform:uppercase; letter-spacing:.14em; color:var(--feito); font-weight:700}
+.certificado h2{font-size:clamp(1.6rem,4vw,2.4rem); margin:8px 0 6px; font-weight:600}
+.certificado .nome{font-family:var(--fonte-titulo); font-size:clamp(1.8rem,5vw,3rem); font-weight:700; color:var(--acento); margin:14px 0}
+.certificado p{color:var(--texto-2); margin:0 0 6px}
+.certificado .dados{font-size:.9rem; font-variant-numeric:tabular-nums}
+
+.ferramentas{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; align-items:center}
+#txtExport{width:100%; margin-top:10px; font-family:var(--fonte-mono); font-size:.8rem; min-height:70px; border:1px solid var(--linha); border-radius:8px; background:var(--superficie-2); color:var(--texto); padding:8px}
+.dialogo{border:1px solid var(--linha); background:var(--superficie-2); border-radius:8px; padding:12px 14px; margin-top:10px}
+.toast{
+  position:fixed; bottom:calc(20px + env(safe-area-inset-bottom,0px)); left:50%; transform:translateX(-50%);
+  background:var(--texto); color:var(--fundo); padding:10px 16px; border-radius:99px; font-size:.9rem; z-index:50;
+  opacity:0; transition:opacity .25s; pointer-events:none;
+}
+.toast.on{opacity:1}
+
+/* ---------- responsivo ---------- */
+@media (max-width: 900px){
+  .app{grid-template-columns:1fr}
+  .lateral{
+    position:fixed; inset:0; top:0; height:100%; z-index:30; width:min(320px, 88vw); transform:translateX(-105%);
+    transition:transform .25s; box-shadow:var(--sombra); padding-top:calc(18px + env(safe-area-inset-top,0px));
+  }
+  .lateral.aberta{transform:none}
+  .btn-menu{display:inline-flex}
+  .topo{gap:8px; padding:8px 12px}
+  .topo .marca{font-size:.95rem; white-space:normal; line-height:1.15}
+  .progresso-topo{min-width:0}
+  .progresso-topo .barra{width:60px; flex:none}
+  .topo .marca small{display:none}
+  .aluno-sel label{display:none}
+  .aluno-sel select{max-width:96px; padding:6px 8px}
+  .fundo-menu{position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:25}
+  .principal{padding-block:20px 60px}
+}
+@media (max-width: 560px){
+  .progresso-topo .barra{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <button class="btn-menu" id="btnMenu" aria-label="Abrir sumário" aria-expanded="false">☰ Aulas</button>
+  <div class="marca">Claude 101 em português<small>Curso pessoal · 13 aulas em 4 módulos</small></div>
+  <div class="espaco"></div>
+  <div class="progresso-topo" aria-live="polite"><div class="barra"><i id="barraProg"></i></div><span id="txtProg">0 de 13</span></div>
+  <div class="aluno-sel">
+    <label for="selAluno">Aluno</label>
+    <select id="selAluno" aria-label="Quem está estudando"></select>
+  </div>
+</header>
+
+<div class="app">
+  <nav class="lateral" id="lateral" aria-label="Sumário do curso">
+    <div class="modulo">
+      <ul class="lista-aulas"><li><button type="button" data-tela="inicio" id="navInicio"><span class="marca-ok" aria-hidden="true">✓</span><span class="rot">Início do curso<small>Como funciona</small></span></button></li></ul>
+    </div>
+    <div id="sumario"></div>
+  </nav>
+  <main class="principal"><div class="conteudo" id="conteudo"></div></main>
+</div>
+<div class="fundo-menu" id="fundoMenu" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="curso.js"></script>
+<script>
+(function(){
+  const C = window.CURSO;
+  const CHAVE = "cursoClaude.v1";
+  const TOTAL = 13;
+
+  /* ---------- estado ---------- */
+  function vazio(){ return { concluidas:{}, pratica:{}, notas:{}, quiz:{}, classif:{}, final:null }; }
+  let estado = { alunoAtual: C.alunos[0].id, alunos: {} };
+  C.alunos.forEach(a => estado.alunos[a.id] = vazio());
+
+  function carregar(){
+    try{
+      const s = localStorage.getItem(CHAVE);
+      if(!s) return;
+      const o = JSON.parse(s);
+      if(o && o.alunos){
+        C.alunos.forEach(a => { estado.alunos[a.id] = Object.assign(vazio(), o.alunos[a.id] || {}); });
+        if(o.alunoAtual && estado.alunos[o.alunoAtual]) estado.alunoAtual = o.alunoAtual;
+      }
+    }catch(e){}
+  }
+  function salvar(){
+    try{ localStorage.setItem(CHAVE, JSON.stringify(estado)); }catch(e){}
+  }
+  function A(){ return estado.alunos[estado.alunoAtual]; }
+  function alunoNome(){ return C.alunos.find(a => a.id === estado.alunoAtual).nome; }
+  function concluidas(){ return Object.keys(A().concluidas).filter(k => A().concluidas[k]).length; }
+
+  /* ---------- utilidades ---------- */
+  const $ = (s, r) => (r||document).querySelector(s);
+  function el(tag, attrs, ...kids){
+    const e = document.createElement(tag);
+    if(attrs) for(const k in attrs){
+      if(k === "class") e.className = attrs[k];
+      else if(k === "html") e.innerHTML = attrs[k];
+      else if(k.startsWith("on")) e.addEventListener(k.slice(2), attrs[k]);
+      else if(attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]);
+    }
+    kids.flat().forEach(k => { if(k === null || k === undefined) return; e.append(k.nodeType ? k : document.createTextNode(String(k))); });
+    return e;
+  }
+  let toastTimer;
+  function toast(msg){
+    const t = $("#toast"); t.textContent = msg; t.classList.add("on");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("on"), 2200);
+  }
+  function copiar(texto, btn){
+    const ok = () => { btn.textContent = "Copiado"; setTimeout(() => btn.textContent = "Copiar", 1600); };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents(btn.parentElement);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      toast("Selecione e copie o texto");
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(texto).then(ok, fallback);
+    } else fallback();
+  }
+  function moduloDaAula(n){ return C.modulos.find(m => m.aulas.includes(n)); }
+  function dataBR(iso){
+    const d = new Date(iso); return d.toLocaleDateString("pt-BR", { day:"2-digit", month:"long", year:"numeric" });
+  }
+
+  /* ---------- navegação ---------- */
+  let tela = { tipo:"inicio" };
+  function ir(t){
+    tela = t; render();
+    window.scrollTo({ top:0, behavior:"auto" });
+    fecharMenu();
+    try{ location.hash = t.tipo === "aula" ? "aula" + t.n : t.tipo; }catch(e){}
+  }
+  function lerHash(){
+    const h = (location.hash || "").replace("#","");
+    if(/^aula\d+$/.test(h)){ const n = +h.slice(4); if(C.aulas[n]) return { tipo:"aula", n }; }
+    if(h === "final") return { tipo:"final" };
+    return { tipo:"inicio" };
+  }
+
+  function abrirMenu(){ $("#lateral").classList.add("aberta"); $("#fundoMenu").hidden = false; $("#btnMenu").setAttribute("aria-expanded","true"); }
+  function fecharMenu(){ $("#lateral").classList.remove("aberta"); $("#fundoMenu").hidden = true; $("#btnMenu").setAttribute("aria-expanded","false"); }
+  $("#btnMenu").addEventListener("click", () => $("#lateral").classList.contains("aberta") ? fecharMenu() : abrirMenu());
+  $("#fundoMenu").addEventListener("click", fecharMenu);
+  $("#navInicio").addEventListener("click", () => ir({ tipo:"inicio" }));
+
+  /* ---------- seletor de aluno ---------- */
+  const sel = $("#selAluno");
+  C.alunos.forEach(a => sel.append(el("option", { value:a.id }, a.nome)));
+  sel.addEventListener("change", () => { estado.alunoAtual = sel.value; salvar(); render(); toast("Progresso de " + alunoNome()); });
+
+  /* ---------- sumário ---------- */
+  function renderSumario(){
+    const s = $("#sumario"); s.innerHTML = "";
+    const a = A();
+    C.modulos.forEach((m, i) => {
+      const ul = el("ul", { class:"lista-aulas" });
+      m.aulas.forEach(n => {
+        const aula = C.aulas[n];
+        const feita = !!a.concluidas[n];
+        const parcial = !feita && (a.pratica[n] || a.quiz[n]);
+        const b = el("button", { type:"button", class:(tela.tipo==="aula" && tela.n===n ? "ativa " : "") + (feita ? "feita" : parcial ? "parcial" : ""),
+          onclick: () => ir({ tipo:"aula", n }) },
+          el("span", { class:"marca-ok", "aria-hidden":"true" }, "✓"),
+          el("span", { class:"rot" }, aula.titulo, el("small", null, "Aula " + n + " · " + aula.duracao))
+        );
+        ul.append(el("li", null, b));
+      });
+      if(m.final){
+        const f = a.final;
+        const b = el("button", { type:"button", class:(tela.tipo==="final" ? "ativa " : "") + (f && f.aprovado ? "feita" : ""), onclick: () => ir({ tipo:"final" }) },
+          el("span", { class:"marca-ok", "aria-hidden":"true" }, "✓"),
+          el("span", { class:"rot" }, "Quiz final e certificado", el("small", null, f ? (f.aprovado ? "Aprovado" : "Tentar de novo") : "15 perguntas · 8 min"))
+        );
+        ul.append(el("li", null, b));
+      }
+      s.append(el("div", { class:"modulo" },
+        el("div", { class:"cab" }, el("span", { class:"num" }, String(i+1)), el("span", { class:"nome" }, m.nome)),
+        ul
+      ));
+    });
+    $("#navInicio").classList.toggle("ativa", tela.tipo === "inicio");
+    const n = concluidas();
+    $("#barraProg").style.width = Math.round(n/TOTAL*100) + "%";
+    $("#txtProg").textContent = n + " de " + TOTAL;
+    sel.value = estado.alunoAtual;
+  }
+
+  /* ---------- telas ---------- */
+  function render(){
+    renderSumario();
+    const c = $("#conteudo"); c.innerHTML = "";
+    if(tela.tipo === "aula") c.append(telaAula(tela.n));
+    else if(tela.tipo === "final") c.append(telaFinal());
+    else c.append(telaInicio());
+  }
+
+  function telaInicio(){
+    const a = A();
+    const cards = C.modulos.filter(m => !m.final).map((m, i) => {
+      const feitas = m.aulas.filter(n => a.concluidas[n]).length;
+      return el("div", { class:"card-mod" },
+        el("span", { class:"n" }, String(i+1)),
+        el("span", { class:"t" }, m.nome),
+        el("span", { class:"q" }, m.pergunta),
+        el("span", { class:"pr" }, feitas + " de " + m.aulas.length + " aulas"),
+        el("div", { class:"mini" }, el("i", { style:"width:" + Math.round(feitas/m.aulas.length*100) + "%" }))
+      );
+    });
+    const prox = [1,2,3,4,5,6,7,8,9,10,11,12,13].find(n => !a.concluidas[n]);
+    const f = a.final;
+    return el("div", { class:"inicio" },
+      el("div", { class:"eyebrow" }, el("b", null, "Olá, " + alunoNome()), el("span", null, concluidas() + " de 13 aulas concluídas")),
+      el("h1", null, C.titulo),
+      el("p", { class:"sub" }, C.subtitulo),
+      el("p", null, "Este curso segue a estrutura do Claude 101, o curso oficial da Anthropic Academy, com texto original em português e exemplos do dia a dia. Cada aula tem uma explicação curta, uma prática para fazer no próprio Claude e um quiz com correção na hora. O progresso de cada aluno fica salvo neste navegador."),
+      el("div", { class:"cards-mod" }, cards),
+      el("div", { class:"bloco" },
+        el("h2", null, "Como cada aula funciona"),
+        el("div", { class:"metodo" },
+          el("div", null, el("b", null, "1. Explicação"), "Leitura de 5 a 15 minutos, com os pontos principais e exemplos."),
+          el("div", null, el("b", null, "2. Prática"), "Um exercício para fazer no Claude, com prompt sugerido para copiar."),
+          el("div", null, el("b", null, "3. Quiz"), "Três perguntas com correção imediata e explicação de cada resposta."),
+          el("div", null, el("b", null, "4. Concluir"), "Marque a aula como concluída. Ao final, um quiz de 15 perguntas dá o certificado.")
+        )
+      ),
+      el("div", { class:"rodape-aula" },
+        el("div", null,
+          prox ? el("button", { class:"btn primario", type:"button", onclick: () => ir({ tipo:"aula", n:prox }) }, (concluidas() ? "Continuar na aula " : "Começar pela aula ") + prox + " →")
+               : el("button", { class:"btn primario", type:"button", onclick: () => ir({ tipo:"final" }) }, f && f.aprovado ? "Ver o certificado" : "Fazer o quiz final →")
+        ),
+        el("a", { href:"https://academy.claude.com/courses/claude-101", target:"_blank", rel:"noopener", class:"btn pequeno" }, "Curso original (inglês)")
+      ),
+      blocoFerramentas()
+    );
+  }
+
+  function blocoFerramentas(){
+    const wrap = el("div", { class:"bloco", style:"margin-top:18px" });
+    wrap.append(el("h2", null, "Levar o progresso para outro aparelho"));
+    wrap.append(el("p", { class:"nota", style:"margin:0 0 10px" }, "O progresso fica salvo só neste navegador. Para continuar no celular ou em outro computador, copie o código abaixo e cole lá em \"Importar\"."));
+    const ta = el("textarea", { id:"txtExport", "aria-label":"Código de progresso", placeholder:"Clique em Exportar para gerar o código, ou cole aqui um código e clique em Importar." });
+    const conf = el("div", { class:"dialogo" }, "Isso substitui o progresso de " + alunoNome() + " neste navegador. Continuar? ",
+      el("button", { class:"btn pequeno", type:"button", onclick: () => { importar(ta.value); conf.hidden = true; } }, "Sim, substituir"),
+      " ", el("button", { class:"btn pequeno", type:"button", onclick: () => conf.hidden = true }, "Cancelar"));
+    conf.hidden = true;
+    const zerar = el("div", { class:"dialogo" }, "Apagar todo o progresso de " + alunoNome() + " neste navegador? ",
+      el("button", { class:"btn pequeno", type:"button", onclick: () => { estado.alunos[estado.alunoAtual] = vazio(); salvar(); render(); toast("Progresso zerado"); } }, "Sim, apagar"),
+      " ", el("button", { class:"btn pequeno", type:"button", onclick: () => zerar.hidden = true }, "Cancelar"));
+    zerar.hidden = true;
+    wrap.append(el("div", { class:"ferramentas" },
+      el("button", { class:"btn pequeno", type:"button", onclick: () => { ta.value = btoa(unescape(encodeURIComponent(JSON.stringify({ aluno:estado.alunoAtual, dados:A() })))); ta.select(); toast("Código gerado. Copie o texto."); } }, "Exportar progresso de " + alunoNome()),
+      el("button", { class:"btn pequeno", type:"button", onclick: () => { if(!ta.value.trim()) { toast("Cole um código primeiro"); return; } conf.hidden = false; } }, "Importar"),
+      el("button", { class:"btn pequeno", type:"button", onclick: () => zerar.hidden = false }, "Zerar progresso")
+    ), ta, conf, zerar);
+    return wrap;
+  }
+  function importar(txt){
+    try{
+      const o = JSON.parse(decodeURIComponent(escape(atob(txt.trim()))));
+      if(!o || !o.dados) throw 0;
+      estado.alunos[estado.alunoAtual] = Object.assign(vazio(), o.dados);
+      salvar(); render(); toast("Progresso importado para " + alunoNome());
+    }catch(e){ toast("Código inválido"); }
+  }
+
+  /* ---------- aula ---------- */
+  function telaAula(n){
+    const aula = C.aulas[n], a = A(), m = moduloDaAula(n);
+    const wrap = el("div");
+    const cab = el("div", { class:"aula-cab" },
+      el("div", { class:"eyebrow" }, el("b", null, "Aula " + n + " de 13"), el("span", null, m.nome), el("span", null, aula.duracao)),
+      el("h1", null, aula.titulo),
+      el("p", { class:"resumo" }, aula.resumo)
+    );
+    if(a.concluidas[n]) cab.append(el("span", { class:"selo-feita" }, "✓ Aula concluída"));
+    wrap.append(cab);
+
+    wrap.append(el("div", { class:"bloco" },
+      el("h2", null, "Nesta aula"),
+      el("p", { style:"color:var(--texto-2); margin-bottom:6px" }, "Ao final, você vai conseguir:"),
+      el("ul", { class:"objetivos" }, aula.objetivos.map(o => el("li", null, o)))
+    ));
+
+    aula.secoes.forEach(s => wrap.append(el("section", { class:"secao" }, el("h2", null, s.h), el("div", { html:s.html }))));
+
+    wrap.append(blocoPratica(n));
+    wrap.append(blocoQuiz(n));
+
+    /* rodapé: concluir + navegação */
+    const podeConcluir = !!a.quiz[n];
+    const btnConcluir = el("button", { class:"btn " + (a.concluidas[n] ? "feito" : "primario"), type:"button", disabled: podeConcluir ? null : "disabled",
+      onclick: () => { a.concluidas[n] = !a.concluidas[n]; salvar(); render(); toast(a.concluidas[n] ? "Aula " + n + " concluída" : "Marcação removida"); } },
+      a.concluidas[n] ? "✓ Concluída (desfazer)" : "Marcar aula como concluída");
+    const nav = el("div", { class:"nav" });
+    if(n > 1) nav.append(el("button", { class:"btn", type:"button", onclick: () => ir({ tipo:"aula", n:n-1 }) }, "← Aula " + (n-1)));
+    if(n < 13) nav.append(el("button", { class:"btn", type:"button", onclick: () => ir({ tipo:"aula", n:n+1 }) }, "Aula " + (n+1) + " →"));
+    else nav.append(el("button", { class:"btn", type:"button", onclick: () => ir({ tipo:"final" }) }, "Quiz final →"));
+    const rod = el("div", { class:"rodape-aula" }, btnConcluir, nav);
+    if(!podeConcluir) rod.append(el("div", { class:"aviso-concluir" }, "Responda o quiz da aula para liberar a conclusão."));
+    wrap.append(rod);
+    return wrap;
+  }
+
+  function blocoPratica(n){
+    const p = C.aulas[n].pratica, a = A();
+    const b = el("div", { class:"bloco pratica-bloco" });
+    b.append(el("span", { class:"tag" }, "Na prática"), el("h2", null, p.titulo), el("p", null, p.intro));
+    if(p.passos) b.append(el("ol", { class:"passos" }, p.passos.map(s => el("li", null, s))));
+    if(p.prompt){
+      b.append(el("p", { class:"prompt-titulo" }, "Prompt sugerido (adapte os colchetes)"));
+      const caixa = el("div", { class:"prompt-caixa" });
+      const btn = el("button", { class:"copiar", type:"button", onclick: () => copiar(p.prompt, btn) }, "Copiar");
+      caixa.append(p.prompt, btn); b.append(caixa);
+    }
+    if(p.classificar) b.append(blocoClassificar(n, p.classificar));
+    const chk = el("input", { type:"checkbox", id:"chkPratica" + n });
+    chk.checked = !!a.pratica[n];
+    const linha = el("label", { class:"check-linha" + (chk.checked ? " on" : ""), for:"chkPratica" + n }, chk, el("span", null, "Fiz a prática desta aula"));
+    chk.addEventListener("change", () => { a.pratica[n] = chk.checked; salvar(); linha.classList.toggle("on", chk.checked); renderSumario(); });
+    b.append(linha);
+    if(p.reflexao){
+      const r = el("div", { class:"reflexao" });
+      r.append(el("h3", null, "Para refletir"), el("ul", null, p.reflexao.map(q => el("li", null, q))));
+      const ta = el("textarea", { class:"notas", id:"notas" + n, placeholder:"Suas anotações (ficam salvas para " + alunoNome() + ")" });
+      ta.value = a.notas[n] || "";
+      const st = el("div", { class:"salvo" });
+      let t; ta.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { a.notas[n] = ta.value; salvar(); st.textContent = "Salvo"; setTimeout(() => st.textContent = "", 1500); }, 400); });
+      r.append(ta, st); b.append(r);
+    }
+    return b;
+  }
+
+  function blocoClassificar(n, cfg){
+    const a = A(); a.classif[n] = a.classif[n] || {};
+    const wrap = el("div", { class:"classificar" });
+    cfg.itens.forEach((it, i) => {
+      const s = el("select", { "aria-label":"Forma de trabalho para: " + it.t, id:"cls" + n + "_" + i });
+      s.append(el("option", { value:"" }, "Escolha..."));
+      cfg.opcoes.forEach((o, j) => s.append(el("option", { value:String(j) }, o)));
+      const item = el("div", { class:"item" }, el("span", null, it.t), s);
+      const v = el("div", { class:"veredito" }); item.append(v);
+      const aplicar = (val, silencioso) => {
+        if(val === "") { item.classList.remove("certo","errado"); v.textContent = ""; return; }
+        const ok = +val === it.r;
+        item.classList.toggle("certo", ok); item.classList.toggle("errado", !ok);
+        v.textContent = ok ? "Certo." : "Não é essa. Pense: tem vários passos e termina num arquivo? É entrega. É uma troca rápida? É turno a turno. Mexe em código? É Code.";
+      };
+      if(a.classif[n][i] !== undefined){ s.value = String(a.classif[n][i]); aplicar(s.value, true); }
+      s.addEventListener("change", () => { a.classif[n][i] = s.value === "" ? undefined : +s.value; salvar(); aplicar(s.value); });
+      wrap.append(item);
+    });
+    return wrap;
+  }
+
+  /* ---------- quiz da aula ---------- */
+  function blocoQuiz(n){
+    const qs = C.aulas[n].quiz, a = A();
+    const b = el("div", { class:"bloco" });
+    b.append(el("h2", null, "Quiz da aula"), el("p", { style:"color:var(--texto-2)" }, "Escolha uma alternativa. A correção aparece na hora."));
+    const resp = (a.quiz[n] && a.quiz[n].respostas) ? a.quiz[n].respostas.slice() : qs.map(() => null);
+    const render = () => {
+      b.querySelectorAll(".quiz-q, .placar, .refazer").forEach(x => x.remove());
+      qs.forEach((q, i) => {
+        const div = el("div", { class:"quiz-q" }, el("div", { class:"enun" }, el("span", { class:"n" }, (i+1) + "."), q.p));
+        const ops = el("div", { class:"opcoes" });
+        q.o.forEach((o, j) => {
+          const marcada = resp[i] !== null;
+          const cls = "opcao" + (marcada && j === q.r ? " certa" : "") + (marcada && resp[i] === j && j !== q.r ? " errada" : "");
+          const btn = el("button", { type:"button", class:cls, disabled: marcada ? "disabled" : null, onclick: () => { resp[i] = j; verificar(); render(); } },
+            el("span", { class:"letra" }, "ABCD"[j]), el("span", null, o));
+          ops.append(btn);
+        });
+        div.append(ops);
+        if(resp[i] !== null){
+          const ok = resp[i] === q.r;
+          div.append(el("div", { class:"explica " + (ok ? "ok" : "nok") }, el("b", null, ok ? "Certo." : "Não é essa."), q.e));
+        }
+        b.append(div);
+      });
+      if(resp.every(r => r !== null)){
+        const acertos = resp.filter((r, i) => r === qs[i].r).length;
+        b.append(el("div", { class:"placar" },
+          el("span", { class:"nota-q" }, acertos + " de " + qs.length),
+          el("span", null, acertos === qs.length ? "Tudo certo." : acertos >= 2 ? "Bom. Releia a explicação do que errou." : "Vale reler a aula antes de seguir."),
+          el("button", { class:"btn pequeno refazer", type:"button", onclick: () => { resp.fill(null); delete a.quiz[n]; salvar(); render(); renderSumario(); } }, "Refazer o quiz")
+        ));
+      }
+    };
+    const verificar = () => {
+      if(resp.every(r => r !== null)){
+        const acertos = resp.filter((r, i) => r === qs[i].r).length;
+        a.quiz[n] = { acertos, total:qs.length, respostas:resp.slice(), data:new Date().toISOString() };
+        salvar();
+        // libera o botão de concluir sem re-renderizar a página toda
+        const rod = $(".rodape-aula"); if(rod){ const btn = rod.querySelector(".btn"); btn.disabled = false; const av = rod.querySelector(".aviso-concluir"); if(av) av.remove(); }
+        renderSumario();
+      }
+    };
+    render();
+    return b;
+  }
+
+  /* ---------- quiz final ---------- */
+  function telaFinal(){
+    const a = A(), Q = C.quizFinal;
+    const wrap = el("div");
+    wrap.append(el("div", { class:"aula-cab" },
+      el("div", { class:"eyebrow" }, el("b", null, "Conclusão"), el("span", null, Q.perguntas.length + " perguntas"), el("span", null, "8 min")),
+      el("h1", null, "Quiz final e certificado"),
+      el("p", { class:"resumo" }, "Quinze perguntas sobre o curso inteiro. Acerte pelo menos " + Math.round(Q.minimo*100) + "% para ganhar o certificado em nome de " + alunoNome() + ". Pode refazer quantas vezes quiser.")
+    ));
+    const faltam = [1,2,3,4,5,6,7,8,9,10,11,12,13].filter(n => !a.concluidas[n]);
+    if(faltam.length) wrap.append(el("p", { class:"nota", style:"margin-bottom:18px" }, "Você ainda não marcou como concluídas as aulas " + faltam.join(", ") + ". O quiz está liberado mesmo assim, mas o certificado só sai com as 13 aulas concluídas."));
+
+    if(a.final && a.final.aprovado && !faltam.length){
+      wrap.append(el("div", { class:"certificado" },
+        el("div", { class:"rotulo" }, "Certificado de conclusão"),
+        el("h2", null, "Claude 101 em português"),
+        el("p", null, "Concluiu as 13 aulas e foi aprovado no quiz final"),
+        el("div", { class:"nome" }, alunoNome()),
+        el("p", { class:"dados" }, "Quiz final: " + a.final.acertos + " de " + a.final.total + " · " + dataBR(a.final.data)),
+        el("p", { class:"dados" }, "Curso pessoal baseado na estrutura do Claude 101 da Anthropic Academy")
+      ));
+    } else if(a.final && !a.final.aprovado){
+      wrap.append(el("p", { class:"nota", style:"margin-bottom:18px" }, "Última tentativa: " + a.final.acertos + " de " + a.final.total + " em " + dataBR(a.final.data) + ". Releia as explicações e tente de novo."));
+    }
+
+    const b = el("div", { class:"bloco" });
+    b.append(el("h2", null, "Quiz final"));
+    const resp = Q.perguntas.map(() => null);
+    let entregue = false;
+    const render = () => {
+      b.querySelectorAll(".quiz-q, .placar, .acao-final").forEach(x => x.remove());
+      Q.perguntas.forEach((q, i) => {
+        const div = el("div", { class:"quiz-q" }, el("div", { class:"enun" }, el("span", { class:"n" }, (i+1) + "."), q.p));
+        const ops = el("div", { class:"opcoes" });
+        q.o.forEach((o, j) => {
+          let cls = "opcao";
+          if(entregue){ if(j === q.r) cls += " certa"; else if(resp[i] === j) cls += " errada"; }
+          else if(resp[i] === j) cls += " certa";
+          ops.append(el("button", { type:"button", class:cls, disabled: entregue ? "disabled" : null, onclick: () => { resp[i] = j; render(); } },
+            el("span", { class:"letra" }, "ABCD"[j]), el("span", null, o)));
+        });
+        div.append(ops);
+        if(entregue) div.append(el("div", { class:"explica " + (resp[i] === q.r ? "ok" : "nok") }, resp[i] === q.r ? "Certo." : "A resposta certa está marcada em verde."));
+        b.append(div);
+      });
+      if(!entregue){
+        const faltamR = resp.filter(r => r === null).length;
+        b.append(el("div", { class:"acao-final placar" },
+          el("button", { class:"btn primario", type:"button", disabled: faltamR ? "disabled" : null, onclick: () => {
+            const acertos = resp.filter((r, i) => r === Q.perguntas[i].r).length;
+            const aprovado = acertos / Q.perguntas.length >= Q.minimo;
+            a.final = { acertos, total:Q.perguntas.length, aprovado, data:new Date().toISOString() };
+            salvar(); entregue = true; renderSumario(); render();
+            toast(aprovado ? "Aprovado: " + acertos + " de " + Q.perguntas.length : "Não foi desta vez: " + acertos + " de " + Q.perguntas.length);
+            if(aprovado && !faltam.length) { ir({ tipo:"final" }); }
+          } }, "Entregar respostas"),
+          el("span", null, faltamR ? "Faltam " + faltamR + " respostas" : "Tudo respondido")
+        ));
+      } else {
+        const acertos = resp.filter((r, i) => r === Q.perguntas[i].r).length;
+        b.append(el("div", { class:"placar" },
+          el("span", { class:"nota-q" }, acertos + " de " + Q.perguntas.length),
+          el("span", null, a.final && a.final.aprovado ? "Aprovado." : "Abaixo do mínimo de " + Math.round(Q.minimo*100) + "%."),
+          el("button", { class:"btn pequeno", type:"button", onclick: () => { resp.fill(null); entregue = false; render(); window.scrollTo({ top:b.offsetTop - 80 }); } }, "Refazer")
+        ));
+      }
+    };
+    render();
+    wrap.append(b);
+    return wrap;
+  }
+
+  /* ---------- início ---------- */
+  carregar();
+  tela = lerHash();
+  render();
+  window.addEventListener("hashchange", () => { const t = lerHash(); if(JSON.stringify(t) !== JSON.stringify(tela)){ tela = t; render(); window.scrollTo({ top:0, behavior:"auto" }); } });
+})();
+</script>
+</body>
+</html>
